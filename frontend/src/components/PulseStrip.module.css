@@ -1,0 +1,51 @@
+.strip {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.line {
+  fill: none;
+  stroke: var(--border-light);
+  stroke-width: 1.5;
+  transition: stroke 0.2s ease;
+}
+
+.lineActive {
+  stroke: var(--accent-active);
+}
+
+.glow {
+  fill: none;
+  stroke: var(--accent-active);
+  stroke-width: 8;
+  opacity: 0.15;
+  filter: blur(4px);
+}
+
+.caption {
+  position: absolute;
+  right: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%) translateX(10px);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-active);
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.captionVisible {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}

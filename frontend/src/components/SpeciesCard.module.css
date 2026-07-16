@@ -1,0 +1,59 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  height: 100%;
+  padding: var(--space-xl) var(--space-xl) var(--space-lg);
+}
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.identity {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.conf {
+  max-width: 480px;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+.waiting {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  text-align: center;
+}
+
+.waitIcon {
+  font-size: 3rem;
+  opacity: 0.3;
+  animation: breathe 3s ease infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.05); }
+}

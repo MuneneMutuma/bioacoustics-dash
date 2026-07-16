@@ -1,0 +1,21 @@
+[Unit]
+Description=PiWild Detection Dashboard
+After=network.target
+
+[Service]
+Type=simple
+# Change WorkingDirectory to wherever you clone this repo
+WorkingDirectory=/opt/piwild/dashboard/backend
+ExecStart=/opt/piwild/dashboard/backend/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
+Restart=on-failure
+RestartSec=5
+
+# Set PERCH_RUNS_DIR to wherever runs/ is located on this host.
+# For sshfs mount: mount first, then set this to the mount point.
+# For LoRaWAN + CSV sync: set to the synced folder.
+Environment=PIWILD_CONFIG=/opt/piwild/pi/deployment/config.yaml
+Environment=PERCH_RUNS_DIR=/mnt/piwild-runs
+Environment=PIWILD_SOURCE=csv
+
+[Install]
+WantedBy=multi-user.target
