@@ -48,6 +48,18 @@ export async function fetchEvents(runId) {
   return res.json();
 }
 
+export async function fetchTopDetections(runId, limit = 50, threshold = 0.5) {
+  const res = await fetch(`${BASE}/api/runs/${runId}/top-detections?limit=${limit}&threshold=${threshold}`);
+  if (!res.ok) throw new Error(`status ${res.status}`);
+  return res.json();
+}
+
+export async function fetchEventDetections(runId, eventId) {
+  const res = await fetch(`${BASE}/api/runs/${runId}/events/${eventId}/detections`);
+  if (!res.ok) throw new Error(`status ${res.status}`);
+  return res.json();
+}
+
 export function createLiveSocket(handlers) {
   let ws = null;
   let reconnectTimer = null;
