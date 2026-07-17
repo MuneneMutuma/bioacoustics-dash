@@ -105,3 +105,13 @@ def top_detections(
         return analytics.top_detections(run_id, limit, threshold)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.get("/{run_id}/events/{event_id}/detections")
+def event_detections(run_id: str, event_id: int):
+    """All inference rows within a specific event."""
+    _check_run(run_id)
+    try:
+        return analytics.event_detections(run_id, event_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
