@@ -25,7 +25,7 @@ export default function ProfilingChart({ data = [] }) {
   const tickStyle = { fontFamily: "var(--font-mono)", fontSize: 10, fill: "var(--text-muted)" };
 
   return (
-    <ResponsiveContainer width="100%" height={340}>
+    <ResponsiveContainer width="100%" height={600}>
       <LineChart data={sampled} margin={{ top: 8, right: 16, bottom: 8, left: 8 }}>
         <XAxis
           dataKey="timestamp_utc"

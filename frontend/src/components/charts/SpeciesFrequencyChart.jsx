@@ -42,7 +42,7 @@ export default function SpeciesFrequencyChart({ data = [] }) {
   const topData = data.slice(0, 15);
 
   return (
-    <ResponsiveContainer width="100%" height={Math.max(300, topData.length * 36)}>
+    <ResponsiveContainer width="100%" height={Math.max(600, topData.length * 48)}>
       <BarChart
         data={topData}
         layout="vertical"

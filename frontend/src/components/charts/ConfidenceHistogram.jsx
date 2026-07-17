@@ -20,9 +20,22 @@ const CustomTooltip = ({ active, payload }) => {
       background: "var(--surface-raised)", border: "1px solid var(--border)",
       padding: "8px 12px", borderRadius: "var(--radius-sm)",
       fontFamily: "var(--font-mono)", fontSize: "0.8rem",
+      boxShadow: "var(--shadow-md)",
+      minWidth: "160px"
     }}>
-      <p>{d?.bin_start?.toFixed(2)} – {d?.bin_end?.toFixed(2)}</p>
-      <p style={{ color: "var(--accent-active)" }}>{d?.count} detections</p>
+      <p style={{ fontWeight: 600 }}>{d?.bin_start?.toFixed(2)} – {d?.bin_end?.toFixed(2)}</p>
+      <p style={{ color: "var(--accent-active)", marginBottom: "8px" }}>{d?.count} detections</p>
+      
+      {d?.species && Object.keys(d.species).length > 0 && (
+        <div style={{ borderTop: "1px solid var(--border)", paddingTop: "8px" }}>
+          {Object.entries(d.species).map(([sp, cnt]) => (
+            <div key={sp} style={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
+              <span style={{ color: "var(--text-muted)", fontStyle: "italic", fontFamily: "var(--font-display)", fontSize: "0.85rem" }}>{sp}</span>
+              <span>{cnt}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -38,7 +51,7 @@ export default function ConfidenceHistogram({ data = [] }) {
   }
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={600}>
       <BarChart data={data} margin={{ top: 8, right: 16, bottom: 8, left: 8 }}>
         <XAxis
           dataKey="bin_start"
