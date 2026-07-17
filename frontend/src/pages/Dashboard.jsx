@@ -6,73 +6,18 @@
  *   [DetectionTicker (left rail, 280px) | SpeciesCard (right, flex)]
  *   [SystemHealth (footer)]
  *
- * WebSocket connects on mount with exponential-backoff auto-reconnect.
- * Keeps the last 100 inference rows; shows the most recent as the
- * "current" detection in the SpeciesCard.
+ * State is now managed by LiveContext so navigating away and back
+ * retains the WebSocket connection and all detection rows.
  */
-import { useEffect, useRef, useState, useCallback } from "react";
 import PulseStrip from "../components/PulseStrip.jsx";
 import DetectionTicker from "../components/DetectionTicker.jsx";
 import SpeciesCard from "../components/SpeciesCard.jsx";
 import SystemHealth from "../components/SystemHealth.jsx";
-import { createLiveSocket, fetchProfile } from "../api/client.js";
+import { useLive } from "../context/LiveContext.jsx";
 import styles from "./Dashboard.module.css";
 
-const MAX_ROWS = 100;
-const PROFILE_POLL_MS = 5000;
-
 export default function Dashboard() {
-  const [rows, setRows]               = useState([]);
-  const [current, setCurrent]         = useState(null);
-  const [runId, setRunId]             = useState(null);
-  const [connStatus, setConnStatus]   = useState("waiting");
-  const [pulseTrigger, setPulseTrigger] = useState(null);
-  const [latestProfile, setLatestProfile] = useState(null);
-
-  const runIdRef = useRef(null);
-  const profileTimerRef = useRef(null);
-
-  // Poll the latest profile row every PROFILE_POLL_MS
-  const pollProfile = useCallback(async () => {
-    if (!runIdRef.current) return;
-    try {
-      const data = await fetchProfile(runIdRef.current);
-      if (data?.length) setLatestProfile(data[data.length - 1]);
-    } catch { /* profile might not exist yet */ }
-  }, []);
-
-  useEffect(() => {
-    profileTimerRef.current = setInterval(pollProfile, PROFILE_POLL_MS);
-    return () => clearInterval(profileTimerRef.current);
-  }, [pollProfile]);
-
-  useEffect(() => {
-    const cleanup = createLiveSocket({
-      onConnect: () => setConnStatus("live"),
-      onDisconnect: () => setConnStatus("waiting"),
-
-      onRunStarted: (msg) => {
-        setRunId(msg.run_id);
-        runIdRef.current = msg.run_id;
-        // Clear board for new run
-        setRows([]);
-        setCurrent(null);
-        setLatestProfile(null);
-      },
-
-      onInference: (msg) => {
-        setCurrent(msg);
-        setPulseTrigger({ ...msg, _ts: Date.now() });
-        setRows((prev) => [msg, ...prev].slice(0, MAX_ROWS));
-      },
-
-      onEventComplete: (_msg) => {
-        // Future: could show a toast / notification for completed events
-      },
-    });
-
-    return cleanup;
-  }, []);
+  const { rows, current, runId, connStatus, pulseTrigger, latestProfile } = useLive();
 
   return (
     <div className={styles.page}>
@@ -96,6 +41,7 @@ export default function Dashboard() {
             detection={current}
             runId={runId}
             connectionStatus={connStatus}
+            rows={rows}
           />
         </section>
       </div>
