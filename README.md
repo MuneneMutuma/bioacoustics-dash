@@ -71,7 +71,7 @@ Open `http://localhost:5173`.
 ```bash
 # 1. Mount the Pi's runs/ directory via sshfs
 mkdir -p ~/piwild-mount
-sshfs perch@perch.local:/home/perch/perch/deployment/runs ~/piwild-mount
+sshfs perch@perch.local:/home/perch/deployment/runs ~/piwild-mount
 
 # 2. Start the backend pointing at the mount
 cd dashboard/backend
