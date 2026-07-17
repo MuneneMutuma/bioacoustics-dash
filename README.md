@@ -131,29 +131,40 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080
 
 ## Docker / Podman deployment (Preferred)
 
-You can run the dashboard in a container. This handles the frontend build and backend setup automatically, isolating it from your system environment.
+The easiest and most reliable way to run the dashboard is using the included launcher scripts. They automatically handle mounting the Raspberry Pi via `sshfs` and spinning up the container using either Docker or Podman.
 
-### Using Docker Compose / Podman Compose
+### Using the Launcher Scripts
 
-1. Make sure you have `docker-compose` (or `podman-compose`) installed.
-2. Edit the `docker-compose.yml` file to point `volumes` to your actual `runs` directory (e.g., your sshfs mount).
-3. Start the container in the background:
+1. Ensure you have `sshfs` and `podman-compose` (or `docker-compose`) installed on your host machine.
+2. If your Raspberry Pi uses a different hostname or user, edit the top variables in `start.sh`.
+3. Start the entire system:
+   ```bash
+   ./start.sh
+   ```
+   *This will mount the Pi to `~/piwild-mount`, build the container, and start the dashboard.*
+
+4. Open `http://localhost:8080` in your browser.
+
+5. When you're done, safely stop the containers and unmount the Pi:
+   ```bash
+   ./stop.sh
+   ```
+
+### Manual Container Deployment
+
+If you prefer to run the commands manually without the launcher scripts:
 
 ```bash
-docker-compose up -d --build
-# Or with podman:
+# 1. Mount the Pi's runs directory via sshfs
+mkdir -p ~/piwild-mount
+sshfs perch@perch.local:/home/perch/deployment/runs ~/piwild-mount
+
+# 2. Start using Compose (it defaults to the local git directory if PIWILD_MOUNT_DIR isn't set)
+export PIWILD_MOUNT_DIR=~/piwild-mount
 podman-compose up -d --build
-```
 
-The dashboard will be available at `http://localhost:8080`.
-
-### Using standard Podman or Docker CLI
-
-```bash
-# 1. Build the image
+# OR build and run via standard CLI:
 podman build -t piwild-dashboard .
-
-# 2. Run it (mount your runs directory)
 podman run -d -p 8080:8080 \
   -e PERCH_RUNS_DIR=/data/runs \
   -v ~/piwild-mount:/data/runs:ro \
