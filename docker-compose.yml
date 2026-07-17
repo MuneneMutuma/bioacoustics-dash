@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  dashboard:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: piwild-dashboard
+    ports:
+      - "8080:8080"
+    environment:
+      # Tell the dashboard where to find the mounted runs directory
+      - PERCH_RUNS_DIR=/data/runs
+    volumes:
+      # Mount the runs directory from your host machine into the container as read-only.
+      # You can change the left side to point to your actual runs path, e.g. an SSHFS mount
+      - ../pi/deployment/runs:/data/runs:ro
+    restart: unless-stopped

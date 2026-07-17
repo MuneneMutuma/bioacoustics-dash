@@ -129,6 +129,40 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080
 
 ---
 
+## Docker / Podman deployment (Preferred)
+
+You can run the dashboard in a container. This handles the frontend build and backend setup automatically, isolating it from your system environment.
+
+### Using Docker Compose / Podman Compose
+
+1. Make sure you have `docker-compose` (or `podman-compose`) installed.
+2. Edit the `docker-compose.yml` file to point `volumes` to your actual `runs` directory (e.g., your sshfs mount).
+3. Start the container in the background:
+
+```bash
+docker-compose up -d --build
+# Or with podman:
+podman-compose up -d --build
+```
+
+The dashboard will be available at `http://localhost:8080`.
+
+### Using standard Podman or Docker CLI
+
+```bash
+# 1. Build the image
+podman build -t piwild-dashboard .
+
+# 2. Run it (mount your runs directory)
+podman run -d -p 8080:8080 \
+  -e PERCH_RUNS_DIR=/data/runs \
+  -v ~/piwild-mount:/data/runs:ro \
+  --name piwild-dashboard \
+  piwild-dashboard
+```
+
+---
+
 ## Environment variables
 
 | Variable | Default | Description |
